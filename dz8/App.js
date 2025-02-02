@@ -14,13 +14,4 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  globalText: {
-    fontFamily: 'GreatVibes-Regular',
-    fontSize: 20,
-    color: 'red',
-    margin: 50
-  },
-});
-
 export default App;
