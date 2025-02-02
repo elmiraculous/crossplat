@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, Button, FlatList, TextInput, StyleSheet } from 'react-native';
 import TodoItem from '../components/TodoItem';
-import CompletedTasksModal from '../components/CompletedTasksModal'; 
-import { useTheme } from '../theme/ThemeContext'; 
-
+import CompletedTasksModal from '../components/CompletedTasksModal';
+import { useTheme } from '../theme/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const HomeScreen = () => {
   const [todos, setTodos] = useState([]);
@@ -11,6 +11,7 @@ const HomeScreen = () => {
   const [text, setText] = useState('');
   const modalizeRef = useRef(null);
   const { colors, toggleTheme, theme } = useTheme();
+  const { t } = useTranslation(); 
 
   const addTodo = () => {
     if (text.trim()) {
@@ -40,19 +41,19 @@ const HomeScreen = () => {
         style={{
           borderWidth: 1,
           padding: 10,
-          marginBottom: 20, 
+          marginBottom: 20,
           marginTop: 70,
           backgroundColor: colors.background,
-          color: theme === 'dark' ? '#fff' : '#000', 
+          color: theme === 'dark' ? '#fff' : '#000',
           borderRadius: 8,
         }}
-        placeholder="Добавить задачу"
+        placeholder={t('addButton')} // Перевод для placeholder
         value={text}
         onChangeText={setText}
         placeholderTextColor={theme === 'dark' ? '#fff' : '#888'}
       />
-      <Button title="Добавить" onPress={addTodo} />
-      
+      <Button title={t('addButton')} onPress={addTodo} />
+
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id}
@@ -60,13 +61,12 @@ const HomeScreen = () => {
           <TodoItem item={item} onDelete={deleteTodo} onToggle={toggleTodo} />
         )}
       />
-      
-      <Button title="Посмотреть завершенные задачи" onPress={() => modalizeRef.current?.open()} />
 
+      <Button title={t('completedTasks')} onPress={() => modalizeRef.current?.open()} />
       <CompletedTasksModal modalizeRef={modalizeRef} completedTasks={completedTasks} />
 
       <View style={styles.footer}>
-        <Button title="Переключить тему" onPress={toggleTheme} />
+        <Button title={t('switch')} onPress={toggleTheme} />
       </View>
     </View>
   );
