@@ -1,17 +1,14 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import HomeScreen from './screens/HomeScreen';
-
-const Stack = createStackNavigator();
-
+import {ThemeProvider} from './theme/ThemeContext';
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <HomeScreen />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 };
 
