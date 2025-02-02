@@ -1,49 +1,110 @@
 import React, { useState, useEffect } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider } from './theme/ThemeContext';
-import { ActivityIndicator, View } from 'react-native';
-import HomeScreen from './screens/HomeScreen';
-import i18n from 'i18next';
-import { useTranslation } from 'react-i18next';
-import * as Font from 'expo-font';
-import * as Localization from 'expo-localization';
-
-import en from './assets/i18n/en.json';
-import ru from './assets/i18n/ru.json';
-import { initReactI18next } from 'react-i18next';
+import { View, Button, FlatList, Text, StyleSheet, TextInput } from 'react-native';
+import Realm from 'realm';
+import UserSchema from './models/User';
 
 const App = () => {
-  const [isFontLoaded, setIsFontLoaded] = useState(false);
-  const [isTranslationLoaded, setIsTranslationLoaded] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
+  const [realm, setRealm] = useState(null);
 
   useEffect(() => {
-    Font.loadAsync({
-      'GreatVibes-Regular': require('./assets/fonts/GreatVibes-Regular.ttf'),
-    }).then(() => setIsFontLoaded(true));
+    const openRealm = async () => {
+      const realmInstance = await Realm.open({
+        schema: [UserSchema],
+      });
+      setRealm(realmInstance);
+      loadUsers(realmInstance);
+    };
 
-    i18n
-      .use(initReactI18next)
-      .init({
-        lng: Localization.locale.split('-')[0], 
-        resources: {
-          en: en,
-          ru: ru,
-        },
-      })
-      .then(() => setIsTranslationLoaded(true));
+    openRealm();
+
+    return () => {
+      if (realm) {
+        realm.close();
+      }
+    };
   }, []);
 
-  if (!isFontLoaded || !isTranslationLoaded) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
+  const loadUsers = (realmInstance) => {
+    const users = realmInstance.objects('User');
+    setUsers([...users]);
+  };
+
+  const addUser = () => {
+    if (name && email && realm) {
+      realm.write(() => {
+        realm.create('User', {
+          id: Date.now().toString(),
+          name,
+          email,
+        });
+      });
+      loadUsers(realm);
+      setName('');
+      setEmail('');
+    }
+  };
+
+  const deleteUser = (id) => {
+    if (realm) {
+      realm.write(() => {
+        const userToDelete = realm.objectForPrimaryKey('User', id);
+        realm.delete(userToDelete);
+      });
+      loadUsers(realm);
+    }
+  };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <HomeScreen />
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <View style={styles.container}>
+      <TextInput
+        placeholder="Enter name"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Enter email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+      <Button title="Add User" onPress={addUser} />
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text>{item.name} - {item.email}</Text>
+            <Button title="Delete" onPress={() => deleteUser(item.id)} />
+          </View>
+        )}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 70,
+  },
+  input: {
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 10,
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+  },
+});
 
 export default App;

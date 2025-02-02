@@ -47,7 +47,7 @@ const HomeScreen = () => {
           color: theme === 'dark' ? '#fff' : '#000',
           borderRadius: 8,
         }}
-        placeholder={t('addButton')} // Перевод для placeholder
+        placeholder={t('addButton')} 
         value={text}
         onChangeText={setText}
         placeholderTextColor={theme === 'dark' ? '#fff' : '#888'}
