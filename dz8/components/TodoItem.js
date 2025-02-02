@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import AppText from './AppText';
+
 
 const TodoItem = ({ item, onDelete, onToggle }) => {
   const { colors, theme } = useTheme();
@@ -23,11 +25,11 @@ const TodoItem = ({ item, onDelete, onToggle }) => {
   return (
     <TouchableOpacity onPress={handleToggle}>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={[styles.text, { textDecorationLine: item.completed ? 'line-through' : 'none', color: colors.text }]}>
+        <AppText style={[styles.text, { textDecorationLine: item.completed ? 'line-through' : 'none', color: colors.text }]}>
           {item.text}
-        </Text>
+        </AppText>
         <TouchableOpacity onPress={handleDelete}>
-          <Text style={{ color: theme === 'dark' ? '#ff6347' : '#b22222' }}>Удалить</Text>  {/* Используем красный цвет для кнопки */}
+          <AppText style={{ color: theme === 'dark' ? '#ff6347' : '#b22222' }}>Удалить</AppText>  {/* Используем красный цвет для кнопки */}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

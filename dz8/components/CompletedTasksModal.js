@@ -2,6 +2,7 @@ import React from 'react';
 import { Modalize } from 'react-native-modalize';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import AppText from './AppText';
 
 const CompletedTasksModal = ({ modalizeRef, completedTasks }) => {
   const { colors } = useTheme();
@@ -9,11 +10,11 @@ const CompletedTasksModal = ({ modalizeRef, completedTasks }) => {
   return (
     <Modalize ref={modalizeRef} adjustToContentHeight>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text style={[styles.title, { color: colors.text }]}>Завершенные задачи:</Text>
+        <AppText style={[styles.title, { color: colors.text }]}>Завершенные задачи:</AppText>
         {completedTasks.map((task) => (
-          <Text key={task.id} style={[styles.taskText, { color: colors.text }]}>
+          <AppText key={task.id} style={[styles.taskText, { color: colors.text }]}>
             {task.text}
-          </Text>
+          </AppText>
         ))}
       </View>
     </Modalize>

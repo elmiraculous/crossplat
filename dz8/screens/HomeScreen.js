@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, Button, FlatList, TextInput, StyleSheet } from 'react-native';
-import TodoItem from '../components/TodoItem';  // Предположительно компонент TodoItem для отображения задач
-import CompletedTasksModal from '../components/CompletedTasksModal';  // Модальное окно для завершенных задач
-import { useTheme } from '../theme/ThemeContext';  // Импортируем useTheme для работы с темами
+import TodoItem from '../components/TodoItem';
+import CompletedTasksModal from '../components/CompletedTasksModal'; 
+import { useTheme } from '../theme/ThemeContext'; 
+
 
 const HomeScreen = () => {
   const [todos, setTodos] = useState([]);
